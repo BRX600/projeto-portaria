@@ -1,0 +1,70 @@
+<%- include('../partials/header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="bi bi-people"></i> Pessoas Cadastradas</h2>
+  <div class="d-flex gap-2">
+    <a href="/pessoas/inativas" class="btn btn-outline-secondary">
+      <i class="bi bi-person-slash"></i> Ver Inativas
+    </a>
+    <a href="/pessoas/nova" class="btn btn-primary">
+      <i class="bi bi-plus-circle"></i> Cadastrar Pessoa
+    </a>
+  </div>
+</div>
+
+<% if (mensagem) { %>
+  <div class="alert alert-success alert-dismissible fade show">
+    <i class="bi bi-check-circle"></i> <%= mensagem %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
+
+<% if (erro) { %>
+  <div class="alert alert-danger alert-dismissible fade show">
+    <i class="bi bi-exclamation-triangle"></i> <%= erro %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
+
+<% if (pessoas.length === 0) { %>
+  <div class="alert alert-info">Nenhuma pessoa ativa cadastrada.</div>
+<% } else { %>
+  <table class="table table-striped table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>#</th>
+        <th>Nome</th>
+        <th>Documento (CPF/RG)</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% pessoas.forEach((p, i) => { %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= p.nome %></td>
+        <td><%= p.documento %></td>
+        <td class="d-flex gap-2 flex-wrap">
+          <a href="/acessos/historico?pessoa_id=<%= p.id %>" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-clock-history"></i> Histórico
+          </a>
+          <form action="/pessoas/desativar/<%= p.id %>" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-sm btn-outline-warning"
+                    onclick="return confirm('Desativar <%= p.nome %>? O histórico será preservado.')">
+              <i class="bi bi-person-slash"></i> Desativar
+            </button>
+          </form>
+          <form action="/pessoas/deletar/<%= p.id %>" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-sm btn-outline-danger"
+                    onclick="return confirm('Excluir <%= p.nome %> permanentemente?')">
+              <i class="bi bi-trash"></i> Excluir
+            </button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<%- include('../partials/footer') %>

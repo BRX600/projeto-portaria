@@ -1,0 +1,52 @@
+<%- include('../partials/header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="bi bi-person-slash"></i> Pessoas Inativas</h2>
+  <a href="/pessoas" class="btn btn-outline-secondary">
+    <i class="bi bi-arrow-left"></i> Voltar para Ativas
+  </a>
+</div>
+
+<% if (mensagem) { %>
+  <div class="alert alert-success alert-dismissible fade show">
+    <i class="bi bi-check-circle"></i> <%= mensagem %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
+
+<% if (pessoas.length === 0) { %>
+  <div class="alert alert-info">Nenhuma pessoa inativa no momento.</div>
+<% } else { %>
+  <table class="table table-striped table-hover">
+    <thead class="table-secondary">
+      <tr>
+        <th>#</th>
+        <th>Nome</th>
+        <th>Documento (CPF/RG)</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% pessoas.forEach((p, i) => { %>
+      <tr class="text-muted">
+        <td><%= i + 1 %></td>
+        <td><%= p.nome %></td>
+        <td><%= p.documento %></td>
+        <td class="d-flex gap-2">
+          <a href="/acessos/historico?pessoa_id=<%= p.id %>" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-clock-history"></i> Histórico
+          </a>
+          <form action="/pessoas/reativar/<%= p.id %>" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-sm btn-success"
+                    onclick="return confirm('Reativar <%= p.nome %>?')">
+              <i class="bi bi-person-check"></i> Reativar
+            </button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<%- include('../partials/footer') %>
